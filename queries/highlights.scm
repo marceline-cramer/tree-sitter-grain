@@ -24,7 +24,7 @@
   "provide"
   ; "rec"
   "record"
-  ; "while"
+  "while"
 ] @keyword
 
 (module (identifier) @constant)
