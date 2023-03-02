@@ -471,7 +471,7 @@
         "required": true,
         "types": [
           {
-            "type": "variable",
+            "type": "string_literal",
             "named": true
           }
         ]

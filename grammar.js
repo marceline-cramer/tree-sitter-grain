@@ -39,7 +39,7 @@ module.exports = grammar({
 
     include: $ => seq(
       'include',
-      field('path', $.variable),
+      field('path', $.string_literal),
     ),
 
     // statements
