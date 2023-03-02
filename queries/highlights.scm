@@ -36,6 +36,7 @@
 (attribute) @attribute
 (variable) @variable
 (type) @type
+(operator) @operator
 
 (let_statement var: (identifier) @variable)
 
