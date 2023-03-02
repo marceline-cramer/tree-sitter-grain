@@ -118,6 +118,7 @@ module.exports = grammar({
 
     _expression: $ => prec.left(1, choice(
       $.function,
+      $.list,
       $.binary_expression,
       $.call_expression,
       $.true,
@@ -155,6 +156,13 @@ module.exports = grammar({
       '=>',
       $._expression,
     )),
+
+    list: $ => seq(
+      '[',
+      commaSep($._expression),
+      optional(seq('...', $._expression)),
+      ']',
+    ),
 
     call_expression: $ => seq($.variable, $.argument_list),
     argument_list: $ => seq('(', commaSep($._expression), ')'),

@@ -8,6 +8,8 @@
   ">"
   "{"
   "}"
+  "["
+  "]"
   "=>"
   "->"
 ] @delimiter
@@ -35,6 +37,8 @@
   (false)
   (void)
 ] @constant.builtin
+
+"..." @operator
 
 (module (identifier) @constant)
 
