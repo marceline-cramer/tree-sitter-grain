@@ -28,13 +28,15 @@ module.exports = grammar({
       $._definition,
     ),
 
-    _definition: $ => seq(
-      optional('provide'),
-      choice(
-        $.let_statement,
-        $.record_definition,
-        $.type_definition,
-      )
+    _definition: $ => choice(
+      seq(optional('provide'), $.let_statement),
+      commaSep1(seq(
+        optional('provide'),
+        choice(
+          $.record_definition,
+          $.type_definition,
+        )
+      ))
     ),
 
     include: $ => seq(

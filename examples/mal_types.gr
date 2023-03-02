@@ -36,6 +36,7 @@ provide enum MalType {
 provide let keyword_prefix = "\u029e"
 
 provide let marshal_keyword = (str) => {
+  let test = 5
   keyword_prefix ++ str
 }
 
