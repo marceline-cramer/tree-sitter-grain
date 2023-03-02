@@ -52,6 +52,7 @@
 (operator) @operator
 
 (binding var: (identifier) @variable)
+(function (identifier) @variable)
 
 (enum_definition name: (identifier) @type)
 (enum_variant name: (identifier) @constant)
