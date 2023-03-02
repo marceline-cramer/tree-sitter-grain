@@ -20,6 +20,7 @@ module.exports = grammar({
 
     _statement: $ => choice(
       $.assert,
+      $.assign_statement,
       $.include,
       $.call_expression,
       $.fail,
@@ -46,6 +47,13 @@ module.exports = grammar({
     fail: $ => seq('fail', $._expression),
 
     // statements
+
+    assign_statement: $ => seq(
+      $.variable,
+      optional($.operator),
+      '=',
+      $._expression,
+    ),
 
     let_statement: $ => seq(
       'let',
