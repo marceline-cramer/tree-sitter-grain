@@ -37,23 +37,22 @@ module.exports = grammar({
       )
     ),
 
-    assert: $ => seq('assert', $._expression),
-
     include: $ => seq(
       'include',
       field('path', $.variable),
     ),
 
-    fail: $ => seq('fail', $._expression),
-
     // statements
 
-    assign_statement: $ => seq(
+    assert: $ => seq('assert', $._expression),
+    fail: $ => seq('fail', $._expression),
+
+    assign_statement: $ => prec(2, seq(
       $.variable,
       optional($.operator),
       '=',
       $._expression,
-    ),
+    )),
 
     let_statement: $ => seq(
       'let',
@@ -89,7 +88,7 @@ module.exports = grammar({
       ))
     ),
 
-    _expression: $ => prec.left(choice(
+    _expression: $ => prec.left(1, choice(
       $.function,
       $.binary_expression,
       $.call_expression,
@@ -118,8 +117,8 @@ module.exports = grammar({
 
     block: $ => seq(
       '{',
-      seq($._statement),
-      // optional($._expression),
+      repeat($._statement),
+      optional($._expression),
       '}',
     ),
 
