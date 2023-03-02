@@ -1,27 +1,14 @@
+// fn.gr
 module Main
 
-let eval_let_bindings = (bindings, env) => {
-  let mut remaining = bindings
-  let mut err = None
-  while (true) {
-    match (remaining) {
-      [] => break,
-      [Types.Symbol(key), val, ...tail] => {
-        remaining = tail
-        match (eval(val, env)) {
-          Ok(val) => { let _ = Types.set(key, val, env) },
-          Err(eval_err) => {
-            err = Some(eval_err)
-            break
-          }
-        }
-      },
-      _ => {
-        err = Some("uneven let* bindings")
-        break
-      }
-    }
+/// multiplies two numbers using a loop
+let mul = (a, b) => {
+  let mut total = 0
+  let mut remaining = b
+  while (remaining > 0) {
+    total += a
+    remaining -= 1
   }
 
-  err
+  total
 }
