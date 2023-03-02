@@ -1,6 +1,8 @@
 // fn.gr
 module Main
 
+include "immutablemap"
+
 /// multiplies two numbers using a loop
 let mul = (a, b) => {
   let mut total = 0
@@ -12,3 +14,6 @@ let mul = (a, b) => {
 
   total
 }
+
+/// function only for the sake of testing
+let dissoc = (map, args, env) => Ok(ImmutableMap.empty)
