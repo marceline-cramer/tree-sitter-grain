@@ -27,6 +27,12 @@
   "while"
 ] @keyword
 
+[
+  (true)
+  (false)
+  (void)
+] @constant.builtin
+
 (module (identifier) @constant)
 
 (ERROR) @error

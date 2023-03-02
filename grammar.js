@@ -85,6 +85,9 @@ module.exports = grammar({
       $.function,
       $.binary_expression,
       $.call_expression,
+      $.true,
+      $.false,
+      $.void,
       $.number_literal,
       $.string_literal,
       $.match_expression,
@@ -113,10 +116,7 @@ module.exports = grammar({
     ),
 
     function: $ => prec.left(seq(
-      choice(
-        // $.identifier,
-        seq('(', commaSep($.identifier), ')'),
-      ),
+      seq('(', commaSep($.identifier), ')'),
       '=>',
       $._expression,
     )),
@@ -139,6 +139,10 @@ module.exports = grammar({
     ),
 
     // literals
+    true: $ => 'true',
+    false: $ => 'false',
+    void: $ => 'void',
+
     number_literal: $ => /[0-9]+/,
 
     string_literal: $ => seq(
