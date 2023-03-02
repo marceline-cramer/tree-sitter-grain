@@ -56,10 +56,14 @@ module.exports = grammar({
 
     let_statement: $ => seq(
       'let',
-      optional('mut'),
+      optional(choice('mut', 'rec')),
+      commaSep1($.binding),
+    ),
+
+    binding: $ => seq(
       field('var', $.identifier),
       '=',
-      field('expr', $._expression),
+      field('expr', $._expression)
     ),
 
     while_statement: $ => seq('while', '(', $._expression, ')', $._expression),

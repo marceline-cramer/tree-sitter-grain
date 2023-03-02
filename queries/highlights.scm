@@ -22,7 +22,7 @@
   "module"
   "mut"
   "provide"
-  ; "rec"
+  "rec"
   "record"
   "while"
 ] @keyword
@@ -44,7 +44,7 @@
 (type) @type
 (operator) @operator
 
-(let_statement var: (identifier) @variable)
+(binding var: (identifier) @variable)
 
 (record_definition name: (identifier) @type)
 (record_member name: (identifier) @variable.other.member)
