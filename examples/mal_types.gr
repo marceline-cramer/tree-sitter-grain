@@ -1,0 +1,132 @@
+// mal_types.gr
+module Types
+
+include "immutablemap"
+include "list"
+include "map"
+include "option"
+include "regex"
+include "result"
+include "string"
+
+provide record Env {
+  outer: Option<Env>,
+  data: Map.Map<String, MalType>,
+},
+
+provide record MalFn {
+  cb: (List<MalType>, Env) -> Result<MalType, String>,
+  is_macro: Bool,
+},
+
+provide enum MalType {
+  Nil,
+  Bool(Bool),
+  String(String),
+  Symbol(String),
+  Keyword(String),
+  Number(Number),
+  List(List<MalType>),
+  Vector(List<MalType>),
+  HashMap(ImmutableMap.ImmutableMap<String, MalType>),
+  Atom(Box<MalType>),
+  Function(MalFn),
+}
+
+provide let keyword_prefix = "\u029e"
+
+provide let marshal_keyword = (str) => {
+  keyword_prefix ++ str
+}
+
+provide let unmarshal_keyword = (str) => {
+  let len = String.length(str)
+  String.slice(1, len, str)
+}
+
+provide let unmarshal_maybe_keyword = (str) => {
+  if (String.startsWith(keyword_prefix, str)) {
+    Keyword(unmarshal_keyword(str))
+  } else {
+    String(str)
+  }
+}
+
+let bs_escape_regex = Result.unwrap(Regex.make("\\\\"))
+
+provide let rec pr_str = (val, print_readably) => {
+  match (val) {
+    Nil => "nil",
+    Bool(true) => "true",
+    Bool(false) => "false",
+    String(str) when print_readably => {
+      let str = Regex.replaceAll(bs_escape_regex, "\\", str)
+      let str = String.replaceAll("\"", "\\\"", str)
+      let str = String.replaceAll("\n", "\\n", str)
+      "\"" ++ str ++ "\""
+    },
+    String(str) => str,
+    Keyword(str) => ":" ++ str,
+    Symbol(sym) => sym,
+    Number(num) => toString(num),
+    Vector(vector) => {
+      let strs = List.map((elem) => pr_str(elem, print_readably), vector)
+      let joined = List.join(" ", strs)
+      "[" ++ joined ++ "]"
+    },
+    List(list) => {
+      let strs = List.map((elem) => pr_str(elem, print_readably), list)
+      let joined = List.join(" ", strs)
+      "(" ++ joined ++ ")"
+    },
+    HashMap(map) => {
+      let pr_kv = (kv) => {
+        let (key, val) = kv
+        let key = pr_str(unmarshal_maybe_keyword(key), true)
+        let val = pr_str(val, print_readably)
+        key ++ " " ++ val
+      }
+
+      let items = ImmutableMap.toList(map)
+      let strs = List.map(pr_kv, items)
+      let joined = List.join(" ", strs)
+      "{" ++ joined ++ "}"
+    },
+    Atom(val) => "(atom " ++ pr_str(unbox(val), print_readably) ++ ")",
+    Function(_) => "<function>",
+  }
+}
+
+provide let set = (key, val, env) => {
+  Map.set(key, val, env.data)
+  val
+}
+
+provide let rec find = (key, env) => {
+  match (Map.get(key, env.data)) {
+    Some(val) => Ok(val),
+    None => match (env.outer) {
+      Some(outer) => find(key, outer),
+      None => Err("'" ++ key ++ "' not found"),
+    }
+  }
+}
+
+provide let get = (key, env) => {
+  Option.toResult("'" ++ key ++ "' not found.", Map.get(key, env.data))
+}
+
+provide let make_inner = (env) => {
+  { outer: Some(env), data: Map.make() }
+}
+
+provide let get_macro = (key, env) => {
+  let to_macro = (val) => {
+    match (val) {
+      Function(fn) when fn.is_macro => Ok(fn),
+      _ => Err("function is not a macro"),
+    }
+  }
+
+  Result.flatMap(to_macro, get(key, env))
+}
