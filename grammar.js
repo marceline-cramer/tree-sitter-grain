@@ -85,6 +85,12 @@ module.exports = grammar({
       // TODO record-like enum variants
     ),
 
+    function_type: $ => seq(
+      seq('(', commaSep($.type), ')'),
+      '->',
+      $.type,
+    ),
+
     record_definition: $ => seq(
       'record',
       field('name', $.identifier),
@@ -100,11 +106,14 @@ module.exports = grammar({
 
     type_definition: $ => seq('type', field('type', $.identifier), '=', $.type),
 
-    type: $ => seq(
-      dotSep1($.identifier),
-      optional(seq(
-        '<', commaSep($.type), '>',
-      ))
+    type: $ => choice(
+      $.function_type,
+      seq(
+        dotSep1($.identifier),
+        optional(seq(
+          '<', commaSep($.type), '>',
+        ))
+      )
     ),
 
     _expression: $ => prec.left(1, choice(
