@@ -188,19 +188,11 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
           "type": "assert",
-          "named": true
-        },
-        {
-          "type": "binary_expression",
-          "named": true
-        },
-        {
-          "type": "block",
           "named": true
         },
         {
@@ -212,14 +204,6 @@
           "named": true
         },
         {
-          "type": "false",
-          "named": true
-        },
-        {
-          "type": "function",
-          "named": true
-        },
-        {
           "type": "include",
           "named": true
         },
@@ -228,35 +212,11 @@
           "named": true
         },
         {
-          "type": "match_expression",
-          "named": true
-        },
-        {
-          "type": "number_literal",
-          "named": true
-        },
-        {
           "type": "record_definition",
           "named": true
         },
         {
-          "type": "string_literal",
-          "named": true
-        },
-        {
-          "type": "true",
-          "named": true
-        },
-        {
           "type": "type_definition",
-          "named": true
-        },
-        {
-          "type": "variable",
-          "named": true
-        },
-        {
-          "type": "void",
           "named": true
         },
         {

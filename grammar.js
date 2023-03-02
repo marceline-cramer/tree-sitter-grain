@@ -111,7 +111,7 @@ module.exports = grammar({
     block: $ => seq(
       '{',
       seq($._statement),
-      optional($._expression),
+      // optional($._expression),
       '}',
     ),
 
