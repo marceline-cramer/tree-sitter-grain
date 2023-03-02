@@ -14,6 +14,7 @@
   "assert"
   ; "break"
   ; "else"
+  "enum"
   "fail"
   ; "if"
   "include"
@@ -46,5 +47,7 @@
 
 (binding var: (identifier) @variable)
 
+(enum_definition name: (identifier) @type)
+(enum_variant name: (identifier) @constant)
 (record_definition name: (identifier) @type)
 (record_member name: (identifier) @variable.other.member)

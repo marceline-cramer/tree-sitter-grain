@@ -33,6 +33,7 @@ module.exports = grammar({
       commaSep1(seq(
         optional('provide'),
         choice(
+          $.enum_definition,
           $.record_definition,
           $.type_definition,
         )
@@ -71,6 +72,18 @@ module.exports = grammar({
     while_statement: $ => seq('while', '(', $._expression, ')', $._expression),
 
     // types
+
+    enum_definition: $ => seq(
+      'enum',
+      field('name', $.identifier),
+      '{', commaSep($.enum_variant), '}',
+    ),
+
+    enum_variant: $ => seq(
+      field('name', $.identifier),
+      optional(seq('(', commaSep($.type), ')',))
+      // TODO record-like enum variants
+    ),
 
     record_definition: $ => seq(
       'record',
