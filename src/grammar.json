@@ -586,10 +586,6 @@
             "type": "CHOICE",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "identifier"
-              },
-              {
                 "type": "SEQ",
                 "members": [
                   {
