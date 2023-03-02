@@ -45,6 +45,7 @@
 (ERROR) @error
 (number_literal) @number
 (string_literal) @string
+(escape_sequence) @escape
 (comment) @comment
 (attribute) @attribute
 (variable) @variable

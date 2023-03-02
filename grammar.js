@@ -190,9 +190,22 @@ module.exports = grammar({
 
     string_literal: $ => seq(
       '"',
-      repeat(token.immediate(/[^\\"\n]+/)),
+      repeat(choice(
+        token.immediate(prec(1, /[^\\"\n]+/)),
+        $.escape_sequence,
+      )),
       '"',
     ),
+
+    escape_sequence: $ => token.immediate(seq(
+      '\\',
+      choice(
+        /[^xu]/,
+        /u[0-9a-fA-F]{4}/,
+        /u{[0-9a-fA-F]+}/,
+        /x[0-9a-fA-F]{2}/,
+      )
+    )),
 
     // comments
     comment: $ => token(choice(
