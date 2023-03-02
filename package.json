@@ -1,0 +1,17 @@
+{
+  "name": "grain-tree-sitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bindings/node",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "tree-sitter": [
+    {
+      "scope": "scope.grain",
+      "file-types": [ "gr" ]
+    }
+  ]
+}

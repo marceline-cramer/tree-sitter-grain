@@ -1,0 +1,162 @@
+module.exports = grammar({
+  name: 'grain',
+
+  extras: $ => [
+    /\s|\n|\r/,
+    $.comment,
+  ],
+
+  inline: $ => [ $._statement ],
+
+  word: $ => $.identifier,
+
+  rules: {
+    source_file: $ => seq(
+      $.module,
+      repeat($._statement)
+    ),
+
+    module: $ => seq('module', $.identifier),
+
+    _statement: $ => choice(
+      $.assert,
+      $.include,
+      $.call_expression,
+      $.fail,
+      $.while_statement,
+      $._definition,
+    ),
+
+    _definition: $ => seq(
+      optional('provide'),
+      choice(
+        $.let_statement,
+        $.record_definition,
+        $.type_definition,
+      )
+    ),
+
+    assert: $ => seq('assert', $._expression),
+
+    include: $ => seq(
+      'include',
+      field('path', $.variable),
+    ),
+
+    fail: $ => seq('fail', $._expression),
+
+    // statements
+
+    let_statement: $ => seq(
+      'let',
+      optional('mut'),
+      field('var', $.identifier),
+      '=',
+      field('expr', $._expression),
+    ),
+
+    while_statement: $ => seq('while', '(', $._expression, ')', $._expression),
+
+    // types
+
+    record_definition: $ => seq(
+      'record',
+      field('name', $.identifier),
+      '{', commaSep($.record_member), '}',
+    ),
+
+    record_member: $ => seq(
+      optional('mut'),
+      field('name', $.identifier),
+      ':',
+      $.type,
+    ),
+
+    type_definition: $ => seq('type', field('type', $.identifier), '=', $.type),
+
+    type: $ => seq(
+      dotSep1($.identifier),
+      optional(seq(
+        '<', commaSep($.type), '>',
+      ))
+    ),
+
+    _expression: $ => choice(
+      $.function,
+      $.call_expression,
+      $.number_literal,
+      $.string_literal,
+      $.match_expression,
+      $.block,
+      $.variable,
+    ),
+
+    block: $ => seq(
+      '{',
+      seq($._statement),
+      optional($._expression),
+      '}',
+    ),
+
+    function: $ => seq(
+      choice(
+        // $.identifier,
+        seq('(', commaSep($.identifier), ')'),
+      ),
+      '=>',
+      $._expression,
+    ),
+
+    call_expression: $ => seq($.variable, $.argument_list),
+    argument_list: $ => seq('(', commaSep($._expression), ')'),
+    attribute: $ => $.identifier,
+    variable: $ => seq($.identifier, repeat(seq(".", $.attribute))),
+    identifier: $ => /[a-zA-Z_]\w*/,
+
+    match_expression: $ => seq(
+      'match', '(', $._expression, ')',
+      '{', repeat($.match_case), '}',
+    ),
+
+    match_case: $ => seq(
+      $._expression, // TODO pattern matching
+      '=>',
+      $._expression,
+    ),
+
+    // literals
+    number_literal: $ => /[0-9]+/,
+
+    string_literal: $ => seq(
+      '"',
+      repeat(token.immediate(/[^\\"\n]+/)),
+      '"',
+    ),
+
+    // comments
+    comment: $ => token(choice(
+      seq('//', /(\\(.|\r?\n)|[^\\\n])*/),
+      seq(
+        '/*',
+        /[^*]*\*+([^/*][^*]*\*+)*/,
+        '/'
+      )
+    )),
+  }
+});
+
+function commaSep1(rule) {
+  return seq(rule, repeat(seq(',', rule)))
+}
+
+function commaSep(rule) {
+  return optional(commaSep1(rule))
+}
+
+function dotSep1(rule) {
+  return seq(rule, repeat(seq('.', rule)))
+}
+
+function dotSep(rule) {
+  return optional(dotSep1(rule))
+}

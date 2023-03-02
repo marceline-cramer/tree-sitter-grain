@@ -1,0 +1,14 @@
+module Main
+
+record TestRecord {
+  member1: String,
+  mut member2: Number,
+  member3: List<String>
+}
+
+provide let peek = (reader) => {
+  match (reader.tokens) {
+    [current, ..._] => Some(current),
+    [] => None
+  }
+}

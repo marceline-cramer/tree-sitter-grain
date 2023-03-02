@@ -1,0 +1,3 @@
+// hello.gr
+module Main
+print("Hello, world!")
