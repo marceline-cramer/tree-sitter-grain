@@ -1,9 +1,9 @@
 module Main
 
-// let eval_let_bindings = (bindings, env) => {
+let eval_let_bindings = (bindings, env) => {
   let mut remaining = bindings
   let mut err = None
-  /*while (true) {
+  while (true) {
     match (remaining) {
       [] => break,
       [Types.Symbol(key), val, ...tail] => {
@@ -23,5 +23,5 @@ module Main
     }
   }
 
-  err*/
-// }
+  err
+}
