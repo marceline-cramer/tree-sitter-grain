@@ -81,14 +81,28 @@ module.exports = grammar({
       ))
     ),
 
-    _expression: $ => choice(
+    _expression: $ => prec.left(choice(
       $.function,
+      $.binary_expression,
       $.call_expression,
       $.number_literal,
       $.string_literal,
       $.match_expression,
       $.block,
       $.variable,
+    )),
+
+    binary_expression: $ => prec.left(seq(
+      $._expression,
+      $.operator,
+      $._expression,
+    )),
+
+    operator: $ => choice(
+      '&&','||',
+      '&','|','^', '<<', '>>',
+      '==', '!=', '<', '<=', '>', '>=',
+      '+', '-', '*', '/', '++',
     ),
 
     block: $ => seq(
@@ -98,14 +112,14 @@ module.exports = grammar({
       '}',
     ),
 
-    function: $ => seq(
+    function: $ => prec.left(seq(
       choice(
         // $.identifier,
         seq('(', commaSep($.identifier), ')'),
       ),
       '=>',
       $._expression,
-    ),
+    )),
 
     call_expression: $ => seq($.variable, $.argument_list),
     argument_list: $ => seq('(', commaSep($._expression), ')'),
